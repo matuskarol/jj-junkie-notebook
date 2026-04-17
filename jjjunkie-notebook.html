@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JJ.Junkie Notebook</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e; --surface: #161616; --surface2: #1f1f1f; --border: #2a2a2a;
+    --accent: #e8c547; --accent2: #c43b3b; --text: #f0ede8; --muted: #c4c4c4;
+    --tag-bg: #1a1a1a; --chain: #3b8fc4; --top-game: #e8c547; --class-col: #6b8fc4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px 14px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--accent); line-height: 1; }
+  .logo span { color: var(--muted); font-size: 11px; display: block; letter-spacing: 4px; font-family: 'DM Mono', monospace; margin-top: 2px; }
+  .header-stats { display: flex; gap: 20px; }
+  .stat { text-align: right; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+
+  .tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
+  .tab { padding: 12px 0; margin-right: 28px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; background: none; border-top: none; border-left: none; border-right: none; white-space: nowrap; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .content { padding: 24px; max-width: 700px; margin: 0 auto; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); margin-bottom: 20px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+  .field input, .field textarea, .field select { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 12px 14px; border-radius: 4px; outline: none; transition: border-color 0.2s; appearance: none; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  .field select option { background: var(--surface2); }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .layer-toggle { display: flex; gap: 8px; }
+  .layer-btn { flex: 1; padding: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+  .layer-btn.active { background: var(--accent); color: #0e0e0e; border-color: var(--accent); font-weight: bold; }
+  .layer-btn.active.blue { background: var(--class-col); border-color: var(--class-col); color: white; }
+
+  .link-tech-btn { width: 100%; padding: 12px 16px; background: var(--surface2); border: 1px dashed var(--chain); color: var(--chain); font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .link-tech-btn:hover { background: rgba(59,143,196,0.1); }
+  .linked-preview { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .linked-pill { display: flex; align-items: center; justify-content: space-between; background: rgba(59,143,196,0.1); border: 1px solid var(--chain); border-radius: 4px; padding: 8px 12px; }
+  .linked-pill-name { font-size: 13px; color: var(--text); }
+  .linked-pill-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px; line-height: 1; padding: 0 4px; }
+  .linked-pill-remove:hover { color: var(--accent2); }
+
+  .save-row { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .save-btn { flex: 1; min-width: 80px; padding: 14px; background: var(--accent); color: #0e0e0e; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.2s; }
+  .save-btn:hover { opacity: 0.88; }
+  .cancel-btn { padding: 14px 20px; background: none; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+  .cancel-btn:hover { color: var(--text); border-color: #555; }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-btn { padding: 6px 14px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.15s; }
+  .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+  .search-input { flex: 1; min-width: 160px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 12px; border-radius: 2px; outline: none; }
+  .search-input:focus { border-color: var(--accent); }
+
+  .section-header { display: flex; align-items: center; gap: 12px; margin: 22px 0 10px; font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+  .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-header.top-game-sec { color: var(--top-game); }
+  .section-header.top-game-sec::after { background: rgba(232,197,71,0.25); }
+  .section-header.class-sec { color: var(--class-col); }
+  .section-header.class-sec::after { background: rgba(107,143,196,0.25); }
+  .section-header.sub { font-size: 12px; letter-spacing: 2px; color: #a5a5a5; margin: 14px 0 6px; }
+  .section-header.sub::after { background: #333; }
+  .section-header.typ { font-size: 10px; letter-spacing: 1px; color: #888; margin: 8px 0 4px; font-family: 'DM Mono', monospace; }
+  .section-header.typ::after { background: #2a2a2a; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .big { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 3px; color: var(--border); display: block; margin-bottom: 12px; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s; }
+  .card:hover { border-color: #3e3e3e; }
+  .card.top-game { border-left: 3px solid var(--top-game); }
+  .card.class-tech { border-left: 3px solid var(--class-col); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .card-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; line-height: 1; color: var(--text); }
+  .card-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .tag { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 7px; border-radius: 2px; background: var(--tag-bg); border: 1px solid var(--border); color: #d0d0d0; }
+  .tag.top-game { border-color: var(--top-game); color: var(--top-game); }
+  .tag.has-video { border-color: #e87c3b; color: #e87c3b; }
+  .tag.has-chain { border-color: var(--chain); color: var(--chain); }
+  .card-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .card-body { margin-top: 8px; }
+  .detail-row { font-size: 13px; line-height: 1.5; color: #ddd; }
+  .detail-row strong { color: var(--muted); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-family: 'DM Mono', monospace; display: block; margin-bottom: 2px; }
+
+  .tg-grid { display: grid; gap: 10px; }
+  .tg-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--top-game); border-radius: 4px; padding: 14px 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: background 0.15s; }
+  .tg-card:hover { background: var(--surface2); }
+  .tg-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--border); line-height: 1; min-width: 32px; }
+  .tg-info { flex: 1; }
+  .tg-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; margin-bottom: 2px; }
+  .tg-pos { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .tg-arrow { color: var(--muted); font-size: 18px; }
+
+  .export-section { margin-bottom: 28px; }
+  .export-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; margin-bottom: 8px; color: var(--text); }
+  .export-desc { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+  .export-btn { display: inline-block; padding: 12px 24px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.15s; margin-right: 10px; margin-bottom: 10px; }
+  .export-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .export-btn.primary { background: var(--accent); color: #0e0e0e; border-color: var(--accent); font-weight: bold; }
+  .export-btn.primary:hover { opacity: 0.9; color: #0e0e0e; }
+
+  /* DETAIL MODAL — uses scroll wrapper so clicking backdrop works cleanly */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; overflow-y: auto; }
+  .modal-overlay.open { display: block; }
+  .modal-scroll { min-height: 100%; display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 24px; max-width: 520px; width: 100%; position: relative; }
+  .modal-close { position: absolute; top: 14px; right: 14px; background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; padding: 4px 8px; }
+  .modal-close:hover { color: var(--text); }
+  .modal-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; margin-bottom: 8px; }
+  .modal-badge.top-game { background: rgba(232,197,71,0.15); color: var(--top-game); border: 1px solid var(--top-game); }
+  .modal-badge.class { background: rgba(107,143,196,0.15); color: var(--class-col); border: 1px solid var(--class-col); }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; margin-bottom: 4px; padding-right: 40px; }
+  .modal-pos { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px; }
+  .modal-section { margin-bottom: 14px; }
+  .modal-section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .modal-section-text { font-size: 14px; line-height: 1.6; color: #e0e0e0; }
+  .modal-video-link { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: rgba(232,124,59,0.1); border: 1px solid #e87c3b; border-radius: 4px; color: #e87c3b; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-decoration: none; }
+  .modal-video-link:hover { background: rgba(232,124,59,0.2); }
+  .chain-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .chain-link { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--chain); border-radius: 4px; cursor: pointer; transition: background 0.15s; }
+  .chain-link:hover { background: #252525; }
+  .chain-link-name { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 1px; color: var(--text); flex: 1; }
+  .chain-link-pos { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  .chain-link-arrow { color: var(--chain); font-size: 16px; }
+  .modal-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .modal-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .modal-action-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 14px; border-radius: 3px; cursor: pointer; transition: all 0.15s; background: none; border: 1px solid var(--border); color: var(--muted); }
+  .modal-action-btn:hover { color: var(--text); border-color: #555; }
+  .modal-action-btn.edit:hover { color: var(--accent); border-color: var(--accent); }
+  .modal-action-btn.del:hover { color: var(--accent2); border-color: var(--accent2); }
+  .modal-action-btn.promote:hover { color: var(--top-game); border-color: var(--top-game); }
+  .modal-action-btn.demote:hover { color: var(--class-col); border-color: var(--class-col); }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .breadcrumb-item { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); cursor: pointer; }
+  .breadcrumb-item:hover { color: var(--text); }
+  .breadcrumb-item.current { color: var(--accent); cursor: default; }
+  .breadcrumb-sep { color: var(--border); }
+
+  /* LINK MODAL */
+  .link-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.93); z-index: 400; overflow-y: auto; }
+  .link-modal-overlay.open { display: block; }
+  .link-modal-scroll { min-height: 100%; display: flex; align-items: flex-start; justify-content: center; padding: 30px 16px; }
+  .link-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; max-width: 520px; width: 100%; overflow: hidden; }
+  .link-modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .link-modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; }
+  .link-modal-close { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; padding: 4px 8px; }
+  .link-modal-close:hover { color: var(--text); }
+  .link-modal-body { padding: 12px 24px; max-height: 55vh; overflow-y: auto; }
+  .link-modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+  .link-confirm-btn { flex: 1; padding: 12px; background: var(--chain); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; border: none; border-radius: 4px; cursor: pointer; }
+  .link-confirm-btn:hover { opacity: 0.9; }
+  .link-cancel-btn { padding: 12px 20px; background: none; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
+  .link-cancel-btn:hover { color: var(--text); border-color: #555; }
+  .link-group-header { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 10px 0 5px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
+  .link-group-header.tg-h { color: var(--top-game); border-color: rgba(232,197,71,0.2); }
+  .link-group-header.cl-h { color: var(--class-col); border-color: rgba(107,143,196,0.2); }
+  .link-group-sub { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #999; padding: 7px 0 3px; }
+  /* Link item: clicking anywhere on row toggles, no native checkbox involved */
+  .link-item { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid #1c1c1c; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .link-item:last-child { border-bottom: none; }
+  .link-item:active { background: rgba(255,255,255,0.02); }
+  .cb-box { width: 22px; height: 22px; flex-shrink: 0; border: 2px solid #3a3a3a; border-radius: 4px; background: var(--surface2); display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+  .cb-box.on { background: var(--chain); border-color: var(--chain); }
+  .cb-box.on::after { content: ''; display: block; width: 5px; height: 9px; border: 2.5px solid white; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); }
+  .link-item-info { flex: 1; pointer-events: none; }
+  .link-item-name { font-size: 14px; color: var(--text); }
+  .link-item-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* CUSTOM CONFIRM — highest z-index, always on top */
+  .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
+  .confirm-overlay.open { display: flex; }
+  .confirm-box { background: #1e1e1e; border: 1px solid #3a3a3a; border-radius: 8px; padding: 28px 24px 22px; max-width: 340px; width: 100%; }
+  .confirm-msg { font-size: 15px; line-height: 1.6; color: var(--text); margin-bottom: 22px; }
+  .confirm-btns { display: flex; gap: 10px; }
+  .confirm-ok { flex: 1; padding: 11px; background: var(--accent2); color: white; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; border: none; border-radius: 4px; cursor: pointer; }
+  .confirm-ok:hover { opacity: 0.88; }
+  .confirm-no { flex: 1; padding: 11px; background: none; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
+  .confirm-no:hover { color: var(--text); border-color: #555; }
+
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #0e0e0e; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1px; padding: 10px 20px; border-radius: 2px; z-index: 9999; opacity: 0; transition: opacity 0.3s; white-space: nowrap; pointer-events: none; }
+  #toast.show { opacity: 1; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  @media (max-width: 480px) { .row-2 { grid-template-columns: 1fr; } .header-stats { gap: 12px; } .logo { font-size: 20px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">JJ.Junkie<span>NOTEBOOK</span></div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-num" id="stat-topgame">0</div><div class="stat-label">Top Game</div></div>
+    <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total</div></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" id="tab-add" onclick="switchTab('add')">+ Add</button>
+  <button class="tab" id="tab-notebook" onclick="switchTab('notebook')">Notebook</button>
+  <button class="tab" id="tab-topgame" onclick="switchTab('topgame')">Top Game</button>
+  <button class="tab" id="tab-export" onclick="switchTab('export')">Export</button>
+</div>
+
+<div class="content">
+  <div class="view active" id="view-add">
+    <div class="form-title" id="form-title">LOG A TECHNIQUE</div>
+    <div class="field"><label>Technique Name</label><input type="text" id="f-name" placeholder="e.g. Armbar from guard"></div>
+    <div class="row-2">
+      <div class="field">
+        <label>Position</label>
+        <select id="f-position">
+          <option value="">— select —</option>
+          <optgroup label="Bottom Positions">
+            <option>Closed Guard (bottom)</option><option>Open Guard (bottom)</option>
+            <option>Butterfly Guard (bottom)</option><option>Spider Guard (bottom)</option>
+            <option>Half Guard (bottom)</option><option>Mount (bottom)</option>
+            <option>Side Control (bottom)</option><option>Back (bottom)</option>
+          </optgroup>
+          <optgroup label="Top Positions">
+            <option>Closed Guard (top)</option><option>Open Guard (top)</option>
+            <option>Half Guard (top)</option><option>Mount (top)</option>
+            <option>Side Control (top)</option><option>Back (top)</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option>Standing</option><option>Turtle</option><option>Other</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select id="f-type">
+          <option value="">— select —</option>
+          <option>Submission</option><option>Sweep</option><option>Takedown</option>
+          <option>Pass</option><option>Escape</option><option>Control</option>
+          <option>Transition</option><option>Defense</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Setup — how do you get there?</label><textarea id="f-setup" placeholder="e.g. Break posture, grip sleeve and collar..."></textarea></div>
+    <div class="field"><label>Key Detail — what makes it work?</label><textarea id="f-key" placeholder="e.g. Hips must be HIGH, keep elbow tight..."></textarea></div>
+    <div class="field"><label>Common Mistake</label><textarea id="f-mistake" placeholder="e.g. I keep leaving space..."></textarea></div>
+    <div class="field"><label>Video Link (optional)</label><input type="url" id="f-video" placeholder="https://youtube.com/watch?v=..."></div>
+    <div class="field">
+      <label>Options (What comes next?)</label>
+      <button class="link-tech-btn" onclick="openLinkModal()">⟶ Link Other Techniques</button>
+      <div class="linked-preview" id="linked-preview"></div>
+    </div>
+    <div class="field">
+      <label>Layer</label>
+      <div class="layer-toggle">
+        <button class="layer-btn active" id="btn-class" onclick="setLayer('class')">Class Technique</button>
+        <button class="layer-btn blue" id="btn-topgame" onclick="setLayer('topgame')">Top Game</button>
+      </div>
+    </div>
+    <div class="save-row">
+      <button class="save-btn" onclick="saveTechnique()">SAVE</button>
+      <button class="cancel-btn" id="cancel-add-btn" onclick="handleCancelAdd()">CANCEL</button>
+      <button class="cancel-btn" id="cancel-edit-btn" style="display:none" onclick="handleCancelEdit()">CANCEL</button>
+    </div>
+  </div>
+
+  <div class="view" id="view-notebook">
+    <div class="filter-row">
+      <input class="search-input" id="search" placeholder="Search..." oninput="renderNotebook()">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('topgame',this)">Top Game</button>
+      <button class="filter-btn" onclick="setFilter('class',this)">Class</button>
+    </div>
+    <div id="notebook-list"></div>
+  </div>
+
+  <div class="view" id="view-topgame"><div id="topgame-list"></div></div>
+
+  <div class="view" id="view-export">
+    <div class="form-title">EXPORT YOUR DATA</div>
+    <div class="export-section">
+      <div class="export-title">JSON Backup</div>
+      <div class="export-desc">Full backup. Restore later or move to another device.</div>
+      <button class="export-btn primary" onclick="exportJSON()">Download JSON</button>
+    </div>
+    <div class="export-section">
+      <div class="export-title">Import / Restore</div>
+      <div class="export-desc">Restore from a JSON backup. Merges — no duplicates.</div>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+      <button class="export-btn" onclick="document.getElementById('import-file').click()">Import JSON</button>
+    </div>
+    <div class="export-section">
+      <div class="export-title">Plain Text</div>
+      <div class="export-desc">Good for sharing via message or email.</div>
+      <button class="export-btn" onclick="exportText()">Download TXT</button>
+      <button class="export-btn" onclick="copyText()">Copy to Clipboard</button>
+    </div>
+    <div class="export-section">
+      <div class="export-title">CSV Spreadsheet</div>
+      <div class="export-desc">Opens in Excel or Numbers.</div>
+      <button class="export-btn" onclick="exportCSV()">Download CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-scroll" id="modal-scroll">
+    <div class="modal" id="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="breadcrumb" id="modal-breadcrumb" style="display:none"></div>
+      <div class="modal-badge" id="m-badge"></div>
+      <div class="modal-title" id="m-name"></div>
+      <div class="modal-pos" id="m-pos"></div>
+      <div class="modal-section"><div class="modal-section-label">Setup</div><div class="modal-section-text" id="m-setup"></div></div>
+      <div class="modal-section"><div class="modal-section-label">Key Detail</div><div class="modal-section-text" id="m-key"></div></div>
+      <div class="modal-section"><div class="modal-section-label">Common Mistake</div><div class="modal-section-text" id="m-mistake"></div></div>
+      <div class="modal-section" id="m-video-wrap" style="display:none">
+        <div class="modal-section-label">Video Reference</div>
+        <a class="modal-video-link" id="m-video-link" href="#" target="_blank" rel="noopener">▶ Watch Video</a>
+      </div>
+      <div class="modal-section" id="m-chain-wrap" style="display:none">
+        <div class="modal-section-label">Options — What Comes Next?</div>
+        <div class="chain-list" id="m-chain-list"></div>
+      </div>
+      <div class="modal-date" id="m-date"></div>
+      <div class="modal-actions" id="m-actions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LINK MODAL -->
+<div class="link-modal-overlay" id="link-modal-overlay">
+  <div class="link-modal-scroll" id="link-modal-scroll">
+    <div class="link-modal">
+      <div class="link-modal-header">
+        <div class="link-modal-title">LINK TECHNIQUES</div>
+        <button class="link-modal-close" onclick="closeLinkModal()">✕</button>
+      </div>
+      <div class="link-modal-body" id="link-modal-body"></div>
+      <div class="link-modal-footer">
+        <button class="link-confirm-btn" onclick="confirmLinks()">CONFIRM LINKS</button>
+        <button class="link-cancel-btn" onclick="closeLinkModal()">CANCEL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM CONFIRM -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-msg" id="confirm-msg">Are you sure?</div>
+    <div class="confirm-btns">
+      <button class="confirm-ok" id="confirm-ok">YES</button>
+      <button class="confirm-no" id="confirm-no">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE
+let T = JSON.parse(localStorage.getItem('bjj_t') || '[]');
+let layer = 'class';
+let filter = 'all';
+let editId = null;
+let returnId = null;
+let pending = [];   // pending chain IDs
+let mStack = [];    // modal breadcrumb stack
+
+// ── MIGRATE old localStorage key
+(function(){
+  if (!T.length) {
+    const old = localStorage.getItem('bjj_techniques');
+    if (old) { try { T = JSON.parse(old); persist(); } catch(e){} }
+  }
+})();
+
+// ── PERSIST
+function persist() { localStorage.setItem('bjj_t', JSON.stringify(T)); updateStats(); }
+function updateStats() {
+  document.getElementById('stat-total').textContent = T.length;
+  document.getElementById('stat-topgame').textContent = T.filter(t => t.layer==='topgame').length;
+}
+
+// ── TOAST
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+// ── CUSTOM CONFIRM (Promise-based, works over any overlay)
+function confirm2(msg, yesLabel) {
+  return new Promise(resolve => {
+    document.getElementById('confirm-msg').textContent = msg;
+    document.getElementById('confirm-ok').textContent = yesLabel || 'YES';
+    document.getElementById('confirm-overlay').classList.add('open');
+    function done(v) {
+      document.getElementById('confirm-overlay').classList.remove('open');
+      document.getElementById('confirm-ok').onclick = null;
+      document.getElementById('confirm-no').onclick = null;
+      resolve(v);
+    }
+    document.getElementById('confirm-ok').onclick = () => done(true);
+    document.getElementById('confirm-no').onclick = () => done(false);
+  });
+}
+
+// ── TABS
+function switchTab(tab) {
+  ['add','notebook','topgame','export'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('view-'+t).classList.toggle('active', t===tab);
+  });
+  if (tab==='notebook') renderNotebook();
+  if (tab==='topgame') renderTopGame();
+}
+
+// ── LAYER
+function setLayer(l) {
+  layer = l;
+  document.getElementById('btn-class').classList.toggle('active', l==='class');
+  document.getElementById('btn-topgame').classList.toggle('active', l==='topgame');
+}
+
+// ── LINK MODAL
+function openLinkModal() {
+  const others = T.filter(t => t.id !== editId);
+  const body = document.getElementById('link-modal-body');
+  if (!others.length) {
+    body.innerHTML = '<div style="padding:20px;color:var(--muted);font-family:\'DM Mono\',monospace;font-size:13px;text-align:center;">No other techniques saved yet.</div>';
+    document.getElementById('link-modal-overlay').classList.add('open');
+    return;
+  }
+  const tg = others.filter(t => t.layer==='topgame');
+  const cl = others.filter(t => t.layer==='class');
+
+  function byPos(list) {
+    const g={};
+    list.forEach(t=>{ const k=t.position||'Other'; if(!g[k])g[k]=[]; g[k].push(t); });
+    return g;
+  }
+  function grp(list, label, cls) {
+    if (!list.length) return '';
+    let h = `<div class="link-group-header ${cls}">${label}</div>`;
+    Object.entries(byPos(list)).forEach(([pos,items])=>{
+      h += `<div class="link-group-sub">${pos}</div>`;
+      items.forEach(t => {
+        h += `<div class="link-item" onclick="toggleLink(${t.id})">
+          <div class="cb-box${pending.includes(t.id)?' on':''}" id="cb${t.id}"></div>
+          <div class="link-item-info">
+            <div class="link-item-name">${esc(t.name)}</div>
+            <div class="link-item-meta">${[t.type,t.position].filter(Boolean).join(' · ')}</div>
+          </div>
+        </div>`;
+      });
+    });
+    return h;
+  }
+  body.innerHTML = grp(tg,'Top Game','tg-h') + grp(cl,'Class Techniques','cl-h');
+  document.getElementById('link-modal-overlay').classList.add('open');
+}
+
+function toggleLink(id) {
+  const box = document.getElementById('cb'+id);
+  if (!box) return;
+  if (pending.includes(id)) {
+    pending = pending.filter(x=>x!==id);
+    box.classList.remove('on');
+  } else {
+    if (pending.length >= 10) { toast('Max 10 follow-ups'); return; }
+    pending.push(id);
+    box.classList.add('on');
+  }
+}
+
+function confirmLinks() { renderPills(); closeLinkModal(); }
+function closeLinkModal() { document.getElementById('link-modal-overlay').classList.remove('open'); }
+
+// close link modal by clicking scroll backdrop
+document.getElementById('link-modal-scroll').addEventListener('click', function(e){
+  if (e.target === this) closeLinkModal();
+});
+
+function renderPills() {
+  document.getElementById('linked-preview').innerHTML = pending.map(id => {
+    const t = T.find(x=>x.id===id);
+    return t ? `<div class="linked-pill"><span class="linked-pill-name">${esc(t.name)}</span><button class="linked-pill-remove" onclick="removePill(${id})">×</button></div>` : '';
+  }).join('');
+}
+function removePill(id) { pending=pending.filter(x=>x!==id); renderPills(); }
+
+// ── SAVE
+function saveTechnique() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { toast('Please enter a technique name.'); return; }
+
+  // Duplicate check
+  const dup = T.find(t => t.name.trim().toLowerCase()===name.toLowerCase() && t.id!==editId);
+  if (dup) { toast('"'+name+'" already exists in your notebook.'); return; }
+
+  const tech = {
+    id: editId || Date.now(),
+    name,
+    position: document.getElementById('f-position').value,
+    type: document.getElementById('f-type').value,
+    setup: document.getElementById('f-setup').value.trim(),
+    keyDetail: document.getElementById('f-key').value.trim(),
+    mistake: document.getElementById('f-mistake').value.trim(),
+    video: document.getElementById('f-video').value.trim(),
+    chains: [...pending],
+    layer,
+    date: new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
+  };
+
+  const wasEdit = returnId;
+  if (editId) { const i=T.findIndex(t=>t.id===editId); if(i>-1) T[i]=tech; }
+  else T.unshift(tech);
+
+  persist(); resetForm(); toast('Technique saved!');
+  if (wasEdit) { switchTab('notebook'); renderNotebook(); openModal(tech.id,[]); }
+}
+
+// ── CANCEL ADD
+async function handleCancelAdd() {
+  const dirty = ['f-name','f-setup','f-key','f-mistake','f-video'].some(id=>document.getElementById(id).value.trim()) || pending.length;
+  if (dirty) {
+    const ok = await confirm2('Discard this entry? All entered data will be cleared.','DISCARD');
+    if (!ok) return;
+  }
+  resetForm();
+}
+
+// ── CANCEL EDIT
+async function handleCancelEdit() {
+  const ok = await confirm2('Discard changes? Your edits will not be saved.','DISCARD');
+  if (!ok) return;
+  const rid = returnId;
+  resetForm();
+  if (rid) { switchTab('notebook'); renderNotebook(); openModal(rid,[]); }
+}
+
+// ── RESET FORM
+function resetForm() {
+  editId=null; returnId=null; pending=[];
+  ['f-name','f-setup','f-key','f-mistake','f-video'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-position').value='';
+  document.getElementById('f-type').value='';
+  setLayer('class');
+  document.getElementById('linked-preview').innerHTML='';
+  document.getElementById('form-title').textContent='LOG A TECHNIQUE';
+  document.getElementById('cancel-add-btn').style.display='inline-block';
+  document.getElementById('cancel-edit-btn').style.display='none';
+}
+
+// ── FILTER
+function setFilter(f, el) {
+  filter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderNotebook();
+}
+
+// ── NOTEBOOK
+function renderNotebook() {
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  let list = T.filter(t=>{
+    if(filter==='topgame'&&t.layer!=='topgame') return false;
+    if(filter==='class'&&t.layer!=='class') return false;
+    if(q&&!t.name.toLowerCase().includes(q)&&!(t.position||'').toLowerCase().includes(q)&&!(t.type||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  const c=document.getElementById('notebook-list');
+  if(!list.length){c.innerHTML=`<div class="empty-state"><span class="big">EMPTY</span>No techniques yet.</div>`;return;}
+
+  function grpRender(items,label,cls){
+    if(!items.length) return '';
+    const byPos={};
+    items.forEach(t=>{
+      const p=t.position||'No Position';
+      const tp=t.type||'Uncategorized';
+      if(!byPos[p])byPos[p]={};
+      if(!byPos[p][tp])byPos[p][tp]=[];
+      byPos[p][tp].push(t);
+    });
+    let h=`<div class="section-header ${cls}">${label}</div>`;
+    Object.entries(byPos).forEach(([pos,types])=>{
+      h+=`<div class="section-header sub">${pos}</div>`;
+      Object.entries(types).forEach(([typ,its])=>{
+        h+=`<div class="section-header typ">${typ}</div>`;
+        its.forEach(t=>{h+=card(t);});
+      });
+    });
+    return h;
+  }
+  c.innerHTML = grpRender(list.filter(t=>t.layer==='topgame'),'Top Game','top-game-sec')
+              + grpRender(list.filter(t=>t.layer==='class'),'Class Techniques','class-sec');
+}
+
+function card(t) {
+  const cc=(t.chains||[]).length;
+  return `<div class="card ${t.layer==='topgame'?'top-game':'class-tech'}" onclick="openModal(${t.id},[])">
+    <div class="card-header">
+      <div>
+        <div class="card-name">${esc(t.name)}</div>
+        <div class="card-meta">
+          ${t.layer==='topgame'?'<span class="tag top-game">Top Game</span>':'<span class="tag">Class</span>'}
+          ${t.position?`<span class="tag">${esc(t.position)}</span>`:''}
+          ${t.video?'<span class="tag has-video">▶ Video</span>':''}
+          ${cc?`<span class="tag has-chain">⟶ ${cc} next</span>`:''}
+        </div>
+      </div>
+      <div class="card-date">${t.date}</div>
+    </div>
+    ${t.keyDetail?`<div class="card-body"><div class="detail-row"><strong>Key Detail</strong>${esc(t.keyDetail)}</div></div>`:''}
+  </div>`;
+}
+
+// ── TOP GAME
+function renderTopGame() {
+  const tg=T.filter(t=>t.layer==='topgame');
+  const c=document.getElementById('topgame-list');
+  if(!tg.length){c.innerHTML=`<div class="empty-state"><span class="big">0</span>No Top Game techniques yet.</div>`;return;}
+  c.innerHTML=`<div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">${tg.length} techniques in your Top Game</div>
+    <div class="tg-grid">${tg.map((t,i)=>`
+      <div class="tg-card" onclick="openModal(${t.id},[])">
+        <div class="tg-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="tg-info"><div class="tg-name">${esc(t.name)}</div><div class="tg-pos">${esc(t.position||t.type||'—')}</div></div>
+        <div class="tg-arrow">›</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+// ── EDIT from modal
+function editFromModal(id) {
+  closeModal();
+  const t=T.find(x=>x.id===id); if(!t) return;
+  editId=id; returnId=id; pending=[...(t.chains||[])];
+  document.getElementById('f-name').value=t.name;
+  document.getElementById('f-position').value=t.position||'';
+  document.getElementById('f-type').value=t.type||'';
+  document.getElementById('f-setup').value=t.setup||'';
+  document.getElementById('f-key').value=t.keyDetail||'';
+  document.getElementById('f-mistake').value=t.mistake||'';
+  document.getElementById('f-video').value=t.video||'';
+  setLayer(t.layer); renderPills();
+  document.getElementById('form-title').textContent='EDIT TECHNIQUE';
+  document.getElementById('cancel-add-btn').style.display='none';
+  document.getElementById('cancel-edit-btn').style.display='inline-block';
+  switchTab('add');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── SWITCH LAYER from modal
+function switchLayer(id, newLayer) {
+  const t=T.find(x=>x.id===id); if(!t) return;
+  t.layer=newLayer; persist(); renderNotebook(); renderTopGame(); openModal(id,[]);
+}
+
+// ── DELETE from modal
+async function deleteFromModal(id) {
+  const t=T.find(x=>x.id===id); if(!t) return;
+  const ok = await confirm2('Delete "'+t.name+'"? This cannot be undone.','DELETE');
+  if(!ok) return;
+  T=T.filter(x=>x.id!==id);
+  T.forEach(x=>{x.chains=(x.chains||[]).filter(c=>c!==id);});
+  persist(); renderNotebook(); renderTopGame(); closeModal();
+}
+
+// ── OPEN MODAL
+function openModal(id, stack) {
+  const t=T.find(x=>x.id===id); if(!t) return;
+  mStack=(stack||[]).concat(id);
+
+  // breadcrumb
+  const bc=document.getElementById('modal-breadcrumb');
+  if(mStack.length>1){
+    bc.innerHTML=mStack.map((sid,i)=>{
+      const st=T.find(x=>x.id===sid); const nm=st?st.name:'?';
+      if(i===mStack.length-1) return `<span class="breadcrumb-item current">${esc(nm)}</span>`;
+      const prev=JSON.stringify(mStack.slice(0,i));
+      return `<span class="breadcrumb-item" onclick="openModal(${sid},${prev})">${esc(nm)}</span><span class="breadcrumb-sep">›</span>`;
+    }).join('');
+    bc.style.display='flex';
+  } else { bc.style.display='none'; bc.innerHTML=''; }
+
+  const badge=document.getElementById('m-badge');
+  badge.textContent=t.layer==='topgame'?'Top Game':'Class Technique';
+  badge.className='modal-badge '+(t.layer==='topgame'?'top-game':'class');
+  document.getElementById('m-name').textContent=t.name;
+  document.getElementById('m-pos').textContent=[t.position,t.type].filter(Boolean).join(' · ')||'—';
+  document.getElementById('m-setup').textContent=t.setup||'—';
+  document.getElementById('m-key').textContent=t.keyDetail||'—';
+  document.getElementById('m-mistake').textContent=t.mistake||'—';
+  document.getElementById('m-date').textContent='Logged: '+t.date;
+
+  const vw=document.getElementById('m-video-wrap');
+  if(t.video){document.getElementById('m-video-link').href=t.video;vw.style.display='block';}else{vw.style.display='none';}
+
+  const cw=document.getElementById('m-chain-wrap');
+  const chains=(t.chains||[]).map(cid=>T.find(x=>x.id===cid)).filter(Boolean);
+  if(chains.length){
+    document.getElementById('m-chain-list').innerHTML=chains.map(ct=>
+      `<div class="chain-link" onclick="openModal(${ct.id},${JSON.stringify(mStack)})">
+        <div class="chain-link-name">${esc(ct.name)}</div>
+        <div class="chain-link-pos">${esc(ct.position||ct.type||'')}</div>
+        <div class="chain-link-arrow">›</div>
+      </div>`).join('');
+    cw.style.display='block';
+  } else {cw.style.display='none';}
+
+  const sw = t.layer==='topgame'
+    ? `<button class="modal-action-btn demote" onclick="switchLayer(${t.id},'class')">← Move to Class</button>`
+    : `<button class="modal-action-btn promote" onclick="switchLayer(${t.id},'topgame')">→ Move to Top Game</button>`;
+  document.getElementById('m-actions').innerHTML=`
+    <button class="modal-action-btn edit" onclick="editFromModal(${t.id})">Edit</button>
+    ${sw}
+    <button class="modal-action-btn del" onclick="deleteFromModal(${t.id})">Delete</button>`;
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');mStack=[];}
+
+// close detail modal by clicking the scroll backdrop (not the modal box itself)
+document.getElementById('modal-scroll').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+// ── EXPORT
+function exportJSON(){dl(new Blob([JSON.stringify(T,null,2)],{type:'application/json'}),'jj-junkie-backup.json');}
+function importJSON(event){
+  const file=event.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const imp=JSON.parse(e.target.result);
+      if(!Array.isArray(imp)){toast('Invalid file.');return;}
+      const ids=new Set(T.map(t=>t.id)); let added=0;
+      imp.forEach(t=>{if(!ids.has(t.id)){T.unshift(t);added++;}});
+      persist(); toast(`Imported ${added} technique${added!==1?'s':''}.`);
+    }catch{toast('Could not read file.');}
+  };
+  r.readAsText(file); event.target.value='';
+}
+function buildTxt(){
+  if(!T.length) return 'No techniques logged yet.';
+  return T.map((t,i)=>{
+    const ch=(t.chains||[]).map(cid=>{const ct=T.find(x=>x.id===cid);return ct?ct.name:null;}).filter(Boolean);
+    return [`${i+1}. ${t.name.toUpperCase()} [${t.layer==='topgame'?'TOP GAME':'CLASS'}]`,
+      t.position?`   Position: ${t.position}`:'',t.type?`   Type: ${t.type}`:'',
+      t.setup?`   Setup: ${t.setup}`:'',t.keyDetail?`   Key Detail: ${t.keyDetail}`:'',
+      t.mistake?`   Common Mistake: ${t.mistake}`:'',t.video?`   Video: ${t.video}`:'',
+      ch.length?`   What comes next: ${ch.join(', ')}`:'',`   Logged: ${t.date}`
+    ].filter(Boolean).join('\n');
+  }).join('\n\n---\n\n');
+}
+function exportText(){dl(new Blob([buildTxt()],{type:'text/plain'}),'jj-junkie-techniques.txt');}
+function copyText(){navigator.clipboard.writeText(buildTxt()).then(()=>toast('Copied!')).catch(()=>toast('Copy failed — try Download TXT'));}
+function exportCSV(){
+  const h=['Name','Layer','Position','Type','Setup','Key Detail','Common Mistake','Video','What comes next','Date'];
+  const rows=T.map(t=>{
+    const ch=(t.chains||[]).map(cid=>{const ct=T.find(x=>x.id===cid);return ct?ct.name:null;}).filter(Boolean);
+    return [t.name,t.layer,t.position||'',t.type||'',t.setup||'',t.keyDetail||'',t.mistake||'',t.video||'',ch.join(' | '),t.date]
+      .map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',');
+  });
+  dl(new Blob([[h.join(','),...rows].join('\n')],{type:'text/csv'}),'jj-junkie-techniques.csv');
+}
+function dl(blob,fn){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=fn;a.click();URL.revokeObjectURL(u);}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+updateStats();
+</script>
+</body>
+</html>
