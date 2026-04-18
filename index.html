@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JJ.Junkie Notebook</title>
-  <link rel="apple-touch-icon" href="icon.png">
-<link rel="icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -15,7 +13,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
-
+ 
   header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px 14px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
   .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; color: var(--accent); line-height: 1; }
   .logo span { color: var(--muted); font-size: 11px; display: block; letter-spacing: 4px; font-family: 'DM Mono', monospace; margin-top: 2px; }
@@ -23,15 +21,15 @@
   .stat { text-align: right; }
   .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); line-height: 1; }
   .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Mono', monospace; }
-
+ 
   .tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
   .tab { padding: 12px 0; margin-right: 28px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; font-family: 'DM Mono', monospace; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; background: none; border-top: none; border-left: none; border-right: none; white-space: nowrap; }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
+ 
   .content { padding: 24px; max-width: 700px; margin: 0 auto; }
   .view { display: none; }
   .view.active { display: block; }
-
+ 
   .form-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); margin-bottom: 20px; }
   .field { margin-bottom: 16px; }
   .field label { display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 8px; }
@@ -40,12 +38,12 @@
   .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
   .field select option { background: var(--surface2); }
   .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
+ 
   .layer-toggle { display: flex; gap: 8px; }
   .layer-btn { flex: 1; padding: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.15s; }
   .layer-btn.active { background: var(--accent); color: #0e0e0e; border-color: var(--accent); font-weight: bold; }
   .layer-btn.active.blue { background: var(--class-col); border-color: var(--class-col); color: white; }
-
+ 
   .link-tech-btn { width: 100%; padding: 12px 16px; background: var(--surface2); border: 1px dashed var(--chain); color: var(--chain); font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .link-tech-btn:hover { background: rgba(59,143,196,0.1); }
   .linked-preview { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
@@ -53,19 +51,19 @@
   .linked-pill-name { font-size: 13px; color: var(--text); }
   .linked-pill-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px; line-height: 1; padding: 0 4px; }
   .linked-pill-remove:hover { color: var(--accent2); }
-
+ 
   .save-row { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
   .save-btn { flex: 1; min-width: 80px; padding: 14px; background: var(--accent); color: #0e0e0e; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.2s; }
   .save-btn:hover { opacity: 0.88; }
   .cancel-btn { padding: 14px 20px; background: none; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.15s; }
   .cancel-btn:hover { color: var(--text); border-color: #555; }
-
+ 
   .filter-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
   .filter-btn { padding: 6px 14px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.15s; }
   .filter-btn.active { border-color: var(--accent); color: var(--accent); }
   .search-input { flex: 1; min-width: 160px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 12px; border-radius: 2px; outline: none; }
   .search-input:focus { border-color: var(--accent); }
-
+ 
   .section-header { display: flex; align-items: center; gap: 12px; margin: 22px 0 10px; font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
   .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .section-header.top-game-sec { color: var(--top-game); }
@@ -76,10 +74,10 @@
   .section-header.sub::after { background: #333; }
   .section-header.typ { font-size: 10px; letter-spacing: 1px; color: #888; margin: 8px 0 4px; font-family: 'DM Mono', monospace; }
   .section-header.typ::after { background: #2a2a2a; }
-
+ 
   .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty-state .big { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 3px; color: var(--border); display: block; margin-bottom: 12px; }
-
+ 
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s; }
   .card:hover { border-color: #3e3e3e; }
   .card.top-game { border-left: 3px solid var(--top-game); }
@@ -95,7 +93,7 @@
   .card-body { margin-top: 8px; }
   .detail-row { font-size: 13px; line-height: 1.5; color: #ddd; }
   .detail-row strong { color: var(--muted); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-family: 'DM Mono', monospace; display: block; margin-bottom: 2px; }
-
+ 
   .tg-grid { display: grid; gap: 10px; }
   .tg-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--top-game); border-radius: 4px; padding: 14px 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: background 0.15s; }
   .tg-card:hover { background: var(--surface2); }
@@ -104,7 +102,7 @@
   .tg-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; margin-bottom: 2px; }
   .tg-pos { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
   .tg-arrow { color: var(--muted); font-size: 18px; }
-
+ 
   .export-section { margin-bottom: 28px; }
   .export-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; margin-bottom: 8px; color: var(--text); }
   .export-desc { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
@@ -112,7 +110,7 @@
   .export-btn:hover { border-color: var(--accent); color: var(--accent); }
   .export-btn.primary { background: var(--accent); color: #0e0e0e; border-color: var(--accent); font-weight: bold; }
   .export-btn.primary:hover { opacity: 0.9; color: #0e0e0e; }
-
+ 
   /* DETAIL MODAL — uses scroll wrapper so clicking backdrop works cleanly */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; overflow-y: auto; }
   .modal-overlay.open { display: block; }
@@ -149,7 +147,7 @@
   .breadcrumb-item:hover { color: var(--text); }
   .breadcrumb-item.current { color: var(--accent); cursor: default; }
   .breadcrumb-sep { color: var(--border); }
-
+ 
   /* LINK MODAL */
   .link-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.93); z-index: 400; overflow-y: auto; }
   .link-modal-overlay.open { display: block; }
@@ -179,7 +177,7 @@
   .link-item-info { flex: 1; pointer-events: none; }
   .link-item-name { font-size: 14px; color: var(--text); }
   .link-item-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
-
+ 
   /* CUSTOM CONFIRM — highest z-index, always on top */
   .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
   .confirm-overlay.open { display: flex; }
@@ -190,10 +188,10 @@
   .confirm-ok:hover { opacity: 0.88; }
   .confirm-no { flex: 1; padding: 11px; background: none; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
   .confirm-no:hover { color: var(--text); border-color: #555; }
-
+ 
   #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #0e0e0e; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 1px; padding: 10px 20px; border-radius: 2px; z-index: 9999; opacity: 0; transition: opacity 0.3s; white-space: nowrap; pointer-events: none; }
   #toast.show { opacity: 1; }
-
+ 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -201,7 +199,7 @@
 </style>
 </head>
 <body>
-
+ 
 <header>
   <div class="logo">JJ.Junkie<span>NOTEBOOK</span></div>
   <div class="header-stats">
@@ -209,14 +207,14 @@
     <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total</div></div>
   </div>
 </header>
-
+ 
 <div class="tabs">
   <button class="tab active" id="tab-add" onclick="switchTab('add')">+ Add</button>
   <button class="tab" id="tab-notebook" onclick="switchTab('notebook')">Notebook</button>
   <button class="tab" id="tab-topgame" onclick="switchTab('topgame')">Top Game</button>
   <button class="tab" id="tab-export" onclick="switchTab('export')">Export</button>
 </div>
-
+ 
 <div class="content">
   <div class="view active" id="view-add">
     <div class="form-title" id="form-title">LOG A TECHNIQUE</div>
@@ -274,7 +272,7 @@
       <button class="cancel-btn" id="cancel-edit-btn" style="display:none" onclick="handleCancelEdit()">CANCEL</button>
     </div>
   </div>
-
+ 
   <div class="view" id="view-notebook">
     <div class="filter-row">
       <input class="search-input" id="search" placeholder="Search..." oninput="renderNotebook()">
@@ -284,9 +282,9 @@
     </div>
     <div id="notebook-list"></div>
   </div>
-
+ 
   <div class="view" id="view-topgame"><div id="topgame-list"></div></div>
-
+ 
   <div class="view" id="view-export">
     <div class="form-title">EXPORT YOUR DATA</div>
     <div class="export-section">
@@ -313,7 +311,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-scroll" id="modal-scroll">
@@ -339,7 +337,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- LINK MODAL -->
 <div class="link-modal-overlay" id="link-modal-overlay">
   <div class="link-modal-scroll" id="link-modal-scroll">
@@ -356,7 +354,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- CUSTOM CONFIRM -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
@@ -367,9 +365,9 @@
     </div>
   </div>
 </div>
-
+ 
 <div id="toast"></div>
-
+ 
 <script>
 // ── STATE
 let T = JSON.parse(localStorage.getItem('bjj_t') || '[]');
@@ -379,7 +377,7 @@ let editId = null;
 let returnId = null;
 let pending = [];   // pending chain IDs
 let mStack = [];    // modal breadcrumb stack
-
+ 
 // ── MIGRATE old localStorage key
 (function(){
   if (!T.length) {
@@ -387,14 +385,14 @@ let mStack = [];    // modal breadcrumb stack
     if (old) { try { T = JSON.parse(old); persist(); } catch(e){} }
   }
 })();
-
+ 
 // ── PERSIST
 function persist() { localStorage.setItem('bjj_t', JSON.stringify(T)); updateStats(); }
 function updateStats() {
   document.getElementById('stat-total').textContent = T.length;
   document.getElementById('stat-topgame').textContent = T.filter(t => t.layer==='topgame').length;
 }
-
+ 
 // ── TOAST
 let toastTimer;
 function toast(msg) {
@@ -403,7 +401,7 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
 }
-
+ 
 // ── CUSTOM CONFIRM (Promise-based, works over any overlay)
 function confirm2(msg, yesLabel) {
   return new Promise(resolve => {
@@ -420,7 +418,7 @@ function confirm2(msg, yesLabel) {
     document.getElementById('confirm-no').onclick = () => done(false);
   });
 }
-
+ 
 // ── TABS
 function switchTab(tab) {
   ['add','notebook','topgame','export'].forEach(t => {
@@ -430,14 +428,14 @@ function switchTab(tab) {
   if (tab==='notebook') renderNotebook();
   if (tab==='topgame') renderTopGame();
 }
-
+ 
 // ── LAYER
 function setLayer(l) {
   layer = l;
   document.getElementById('btn-class').classList.toggle('active', l==='class');
   document.getElementById('btn-topgame').classList.toggle('active', l==='topgame');
 }
-
+ 
 // ── LINK MODAL
 function openLinkModal() {
   const others = T.filter(t => t.id !== editId);
@@ -449,7 +447,7 @@ function openLinkModal() {
   }
   const tg = others.filter(t => t.layer==='topgame');
   const cl = others.filter(t => t.layer==='class');
-
+ 
   function byPos(list) {
     const g={};
     list.forEach(t=>{ const k=t.position||'Other'; if(!g[k])g[k]=[]; g[k].push(t); });
@@ -475,7 +473,7 @@ function openLinkModal() {
   body.innerHTML = grp(tg,'Top Game','tg-h') + grp(cl,'Class Techniques','cl-h');
   document.getElementById('link-modal-overlay').classList.add('open');
 }
-
+ 
 function toggleLink(id) {
   const box = document.getElementById('cb'+id);
   if (!box) return;
@@ -488,15 +486,15 @@ function toggleLink(id) {
     box.classList.add('on');
   }
 }
-
+ 
 function confirmLinks() { renderPills(); closeLinkModal(); }
 function closeLinkModal() { document.getElementById('link-modal-overlay').classList.remove('open'); }
-
+ 
 // close link modal by clicking scroll backdrop
 document.getElementById('link-modal-scroll').addEventListener('click', function(e){
   if (e.target === this) closeLinkModal();
 });
-
+ 
 function renderPills() {
   document.getElementById('linked-preview').innerHTML = pending.map(id => {
     const t = T.find(x=>x.id===id);
@@ -504,16 +502,16 @@ function renderPills() {
   }).join('');
 }
 function removePill(id) { pending=pending.filter(x=>x!==id); renderPills(); }
-
+ 
 // ── SAVE
 function saveTechnique() {
   const name = document.getElementById('f-name').value.trim();
   if (!name) { toast('Please enter a technique name.'); return; }
-
+ 
   // Duplicate check
   const dup = T.find(t => t.name.trim().toLowerCase()===name.toLowerCase() && t.id!==editId);
   if (dup) { toast('"'+name+'" already exists in your notebook.'); return; }
-
+ 
   const tech = {
     id: editId || Date.now(),
     name,
@@ -527,15 +525,15 @@ function saveTechnique() {
     layer,
     date: new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})
   };
-
+ 
   const wasEdit = returnId;
   if (editId) { const i=T.findIndex(t=>t.id===editId); if(i>-1) T[i]=tech; }
   else T.unshift(tech);
-
+ 
   persist(); resetForm(); toast('Technique saved!');
   if (wasEdit) { switchTab('notebook'); renderNotebook(); openModal(tech.id,[]); }
 }
-
+ 
 // ── CANCEL ADD
 async function handleCancelAdd() {
   const dirty = ['f-name','f-setup','f-key','f-mistake','f-video'].some(id=>document.getElementById(id).value.trim()) || pending.length;
@@ -545,7 +543,7 @@ async function handleCancelAdd() {
   }
   resetForm();
 }
-
+ 
 // ── CANCEL EDIT
 async function handleCancelEdit() {
   const ok = await confirm2('Discard changes? Your edits will not be saved.','DISCARD');
@@ -554,7 +552,7 @@ async function handleCancelEdit() {
   resetForm();
   if (rid) { switchTab('notebook'); renderNotebook(); openModal(rid,[]); }
 }
-
+ 
 // ── RESET FORM
 function resetForm() {
   editId=null; returnId=null; pending=[];
@@ -567,7 +565,7 @@ function resetForm() {
   document.getElementById('cancel-add-btn').style.display='inline-block';
   document.getElementById('cancel-edit-btn').style.display='none';
 }
-
+ 
 // ── FILTER
 function setFilter(f, el) {
   filter=f;
@@ -575,7 +573,7 @@ function setFilter(f, el) {
   el.classList.add('active');
   renderNotebook();
 }
-
+ 
 // ── NOTEBOOK
 function renderNotebook() {
   const q=(document.getElementById('search').value||'').toLowerCase();
@@ -587,7 +585,7 @@ function renderNotebook() {
   });
   const c=document.getElementById('notebook-list');
   if(!list.length){c.innerHTML=`<div class="empty-state"><span class="big">EMPTY</span>No techniques yet.</div>`;return;}
-
+ 
   function grpRender(items,label,cls){
     if(!items.length) return '';
     const byPos={};
@@ -611,9 +609,10 @@ function renderNotebook() {
   c.innerHTML = grpRender(list.filter(t=>t.layer==='topgame'),'Top Game','top-game-sec')
               + grpRender(list.filter(t=>t.layer==='class'),'Class Techniques','class-sec');
 }
-
+ 
 function card(t) {
   const cc=(t.chains||[]).length;
+  const preview = t.keyDetail ? (t.keyDetail.length > 90 ? t.keyDetail.slice(0, 90).trimEnd() + '…' : t.keyDetail) : '';
   return `<div class="card ${t.layer==='topgame'?'top-game':'class-tech'}" onclick="openModal(${t.id},[])">
     <div class="card-header">
       <div>
@@ -627,10 +626,10 @@ function card(t) {
       </div>
       <div class="card-date">${t.date}</div>
     </div>
-    ${t.keyDetail?`<div class="card-body"><div class="detail-row"><strong>Key Detail</strong>${esc(t.keyDetail)}</div></div>`:''}
+    ${preview?`<div class="card-body"><div class="detail-row"><strong>Key Detail</strong>${esc(preview)}</div></div>`:''}
   </div>`;
 }
-
+ 
 // ── TOP GAME
 function renderTopGame() {
   const tg=T.filter(t=>t.layer==='topgame');
@@ -645,7 +644,7 @@ function renderTopGame() {
       </div>`).join('')}
     </div>`;
 }
-
+ 
 // ── EDIT from modal
 function editFromModal(id) {
   closeModal();
@@ -665,13 +664,13 @@ function editFromModal(id) {
   switchTab('add');
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
+ 
 // ── SWITCH LAYER from modal
 function switchLayer(id, newLayer) {
   const t=T.find(x=>x.id===id); if(!t) return;
   t.layer=newLayer; persist(); renderNotebook(); renderTopGame(); openModal(id,[]);
 }
-
+ 
 // ── DELETE from modal
 async function deleteFromModal(id) {
   const t=T.find(x=>x.id===id); if(!t) return;
@@ -681,12 +680,12 @@ async function deleteFromModal(id) {
   T.forEach(x=>{x.chains=(x.chains||[]).filter(c=>c!==id);});
   persist(); renderNotebook(); renderTopGame(); closeModal();
 }
-
+ 
 // ── OPEN MODAL
 function openModal(id, stack) {
   const t=T.find(x=>x.id===id); if(!t) return;
   mStack=(stack||[]).concat(id);
-
+ 
   // breadcrumb
   const bc=document.getElementById('modal-breadcrumb');
   if(mStack.length>1){
@@ -698,7 +697,7 @@ function openModal(id, stack) {
     }).join('');
     bc.style.display='flex';
   } else { bc.style.display='none'; bc.innerHTML=''; }
-
+ 
   const badge=document.getElementById('m-badge');
   badge.textContent=t.layer==='topgame'?'Top Game':'Class Technique';
   badge.className='modal-badge '+(t.layer==='topgame'?'top-game':'class');
@@ -708,10 +707,10 @@ function openModal(id, stack) {
   document.getElementById('m-key').textContent=t.keyDetail||'—';
   document.getElementById('m-mistake').textContent=t.mistake||'—';
   document.getElementById('m-date').textContent='Logged: '+t.date;
-
+ 
   const vw=document.getElementById('m-video-wrap');
   if(t.video){document.getElementById('m-video-link').href=t.video;vw.style.display='block';}else{vw.style.display='none';}
-
+ 
   const cw=document.getElementById('m-chain-wrap');
   const chains=(t.chains||[]).map(cid=>T.find(x=>x.id===cid)).filter(Boolean);
   if(chains.length){
@@ -723,7 +722,7 @@ function openModal(id, stack) {
       </div>`).join('');
     cw.style.display='block';
   } else {cw.style.display='none';}
-
+ 
   const sw = t.layer==='topgame'
     ? `<button class="modal-action-btn demote" onclick="switchLayer(${t.id},'class')">← Move to Class</button>`
     : `<button class="modal-action-btn promote" onclick="switchLayer(${t.id},'topgame')">→ Move to Top Game</button>`;
@@ -731,17 +730,17 @@ function openModal(id, stack) {
     <button class="modal-action-btn edit" onclick="editFromModal(${t.id})">Edit</button>
     ${sw}
     <button class="modal-action-btn del" onclick="deleteFromModal(${t.id})">Delete</button>`;
-
+ 
   document.getElementById('modal-overlay').classList.add('open');
 }
-
+ 
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');mStack=[];}
-
+ 
 // close detail modal by clicking the scroll backdrop (not the modal box itself)
 document.getElementById('modal-scroll').addEventListener('click',function(e){
   if(e.target===this) closeModal();
 });
-
+ 
 // ── EXPORT
 function exportJSON(){dl(new Blob([JSON.stringify(T,null,2)],{type:'application/json'}),'jj-junkie-backup.json');}
 function importJSON(event){
@@ -782,9 +781,9 @@ function exportCSV(){
   dl(new Blob([[h.join(','),...rows].join('\n')],{type:'text/csv'}),'jj-junkie-techniques.csv');
 }
 function dl(blob,fn){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=fn;a.click();URL.revokeObjectURL(u);}
-
+ 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
+ 
 updateStats();
 </script>
 </body>
